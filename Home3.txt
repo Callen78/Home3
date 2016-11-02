@@ -1,0 +1,400 @@
+Carl Allen
+HomeWork #3
+
+3.1.8
+Max word is Max Count 7515
+distinct = 19695
+words = 142707
+
+3.1.6
+Calculation for Putters is # Words + one for MAX Ð Words < minlen 
+Calculation for Getters is # Words + 1 + #Distinct Words + 1 Ð minlen
+Putters 139044 Getters 158740
+Number of Words < minlen 3664
+
+3.1.8
+Length of 1 Cutoff Max Word the 7515 
+Length of 8 Cutoff Max Monsieur 93
+Length of 10 Cutoff Max Gutenberg-tm 53
+
+3.1.9
+Length 1 prior Word Count 139042 Last Word***
+Length 8 prior Word Count 18225 Last Word newsletter***
+Length 10 prior Word Count 6694 Last Word newsletter***
+
+3.1.19
+List of top ten words and counts:
+the	7515
+and 	4751
+of	 4071
+to	 3458
+a 	2830
+in	2447 
+his	1911
+was 	1675
+that	1663 
+I	1451
+
+
+
+Frequency Count Code 
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.*;
+import java.util.*;
+
+public class DragonCount {
+/**
+     * @param args the command line arguments
+     */
+
+private DragonCount() { }
+
+public static void main(String[] args) {
+
+int minlen = Integer.parseInt(args[0]);
+
+int distinct = 0, words = 0;
+ST<String, Integer> st = new ST<String, Integer>();
+
+int getters = 0;
+   int putters = 0;
+   String lastWord = "";
+   int priorCnt = 0;
+        String[] maxWord = new String[10];
+        int[] maxCntr = new int[10];
+        int maxWordLen = 0;
+        int cntM = 0;
+        int diffOfLen = 0;
+        int loopCtr = 0;
+        int wordCnt = 0;
+
+String key;
+        int keyleng;
+
+String fileName="src/tale.txt";
+        int wordLen = 0;
+        String wordTxt = "";
+
+// String fileName="src/tinyTale.txt";
+        
+        //Instantiate the BufferedReader Class
+        try (BufferedReader in = new BufferedReader(new FileReader(fileName))) {
+                String line;
+                while ((line = in.readLine()) != null)
+                {
+                    String[] pieces = line.split("\\s+");
+                
+                    for (String pieceKey : pieces) {
+                        words++;
+                        
+                    if (pieceKey.length() < minlen) {
+                        wordCnt ++;
+                        continue;
+                    }    
+                    if (st.contains(pieceKey)) {
+                        getters ++;
+                        putters ++;
+                        lastWord = pieceKey;
+                        priorCnt ++;
+                        
+                        st.put(pieceKey, st.get(pieceKey) + 1);
+                    }
+                    else {
+                        lastWord = pieceKey;
+                        priorCnt ++;
+                        st.put(pieceKey, 1);
+                        putters ++;
+                        distinct++;
+                    }
+                }
+            }   // find a key with the highest frequency count
+            String max;
+            putters ++;
+            for (cntM = 0; cntM < 10; cntM++) {
+                max = "";
+                st.put(max, 0);   
+                for (String word : st.keys()) {
+ 
+                    if (st.get(word) > st.get(max))
+                        max = word;
+                }   // System.out.println(max + " " + st.get(max));
+                maxWord[cntM] = max;
+                if (maxWordLen < max.length())
+                    maxWordLen = max.length();
+                maxCntr[cntM] = st.get(max);
+                st.delete(max);
+            }
+            maxWordLen += 4;
+            // System.out.println("distinct = " + distinct);
+            // System.out.println("words    = " + words);
+            // System.out.println("Putters " + putters + " Getters " + getters);
+            // System.out.println("Word Count for words < minlen  " + wordCnt + "\n");
+            priorCnt --;
+            // System.out.println("Last Word " + lastWord + " Prior Cnt " + priorCnt + "\n");
+            System.out.println("List Top 10 words and their counts:");
+            for (cntM = 0; cntM < 10; cntM++) {
+                  wordTxt = maxWord[cntM];
+                  wordLen = wordTxt.length();
+                  diffOfLen = maxWordLen - wordLen;
+                  System.out.print(maxWord[cntM]);
+                  for (loopCtr = 1; loopCtr <= diffOfLen; loopCtr++)
+                      System.out.print(" ");
+                  System.out.println(maxCntr[cntM]);                  
+            }
+            
+            in.close();
+        }
+        catch (Exception e)
+        {
+           System.err.format("Exception occurred trying to read '%s': " + e.getMessage(), fileName);
+           e.printStackTrace();
+           // return null;
+        }  
+    }   
+}
+
+
+Frequency Count #2 code
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.*;
+import java.util.*;
+
+public class DragonCount2 {
+private DragonCount2() { }
+    public static void main(String[] args) {
+// TODO code application logic here
+        int minlen1 = Integer.parseInt(args[0]);
+        int minlen8 = Integer.parseInt(args[1]);
+        int minlen10 = Integer.parseInt(args[2]);
+        
+        int distinct = 0, words = 0;
+ST<String, Integer> st = new ST<String, Integer>();
+        ST<String, Integer> stM1 = new ST<String, Integer>();
+        ST<String, Integer> stM8 = new ST<String, Integer>();
+        ST<String, Integer> stM10 = new ST<String, Integer>();
+        int getters = 0;
+        int putters = 0;
+
+String key;
+        int keyleng;
+
+String fileName="src/tale.txt";
+        // String fileName="src/tinyTale.txt";
+
+String lastSTM1 = "";
+        int priorSTM1 = 0;    
+        String lastSTM8 = "";
+        int priorSTM8 = 0;
+        String lastSTM10 = "";
+        int priorSTM10 = 0;
+        int wordCnt = 0;
+//Instantiate the BufferedReader Class
+        try (BufferedReader in = new BufferedReader(new FileReader(fileName))) {
+                String line;
+                while ((line = in.readLine()) != null)
+                {
+	String[] pieces = line.split("\\s+");
+                    for (String pieceKey : pieces) {
+                        words++;
+                    if (pieceKey.length() < minlen1) {
+                        wordCnt ++;
+                    }    
+                    if (pieceKey.length() >= minlen1) {
+                        if (st.contains(pieceKey)) {
+                            getters ++;
+                            putters ++;
+	st.put(pieceKey, st.get(pieceKey) + 1);
+                        }
+                        else {
+                            st.put(pieceKey, 1);
+                            putters ++;
+                            distinct++;
+                        }
+                    }
+                    if (pieceKey.length() < minlen1) continue;
+                    if (!stM1.contains(pieceKey)) {
+                        stM1.put(pieceKey, 1);
+                        priorSTM1 ++;
+                        lastSTM1 = pieceKey;
+               }
+	else {
+                        stM1.put(pieceKey, stM1.get(pieceKey) + 1);
+                        priorSTM1 ++;
+                        lastSTM1 = pieceKey;
+                    }  
+                
+                    if (pieceKey.length() < minlen8) continue;
+                    if (!stM8.contains(pieceKey)) {
+                        stM8.put(pieceKey, 1);
+                        priorSTM8 ++;
+                        lastSTM8 = pieceKey;
+                    }
+                    else    {                     
+                        stM8.put(pieceKey, stM8.get(pieceKey) + 1);
+                        priorSTM8 ++;
+                        lastSTM8 = pieceKey;
+                    } 
+
+                    if (pieceKey.length() < minlen10) continue; 
+                    if (!stM10.contains(pieceKey)) {
+                        stM10.put(pieceKey, 1);
+                        priorSTM10 ++;
+                        lastSTM10 = pieceKey;
+                    }
+                    else {
+                        stM10.put(pieceKey, stM10.get(pieceKey) + 1);
+                        priorSTM10 ++;
+                        lastSTM10 = pieceKey;
+                    }
+                }
+	}   
+	// find a key with the highest frequency count
+            String max = "";
+            st.put(max, 0);
+            putters ++;
+            for (String word : st.keys()) {
+                getters ++;
+                getters ++;
+                    
+                if (st.get(word) > st.get(max))
+                    max = word;
+            }   // System.out.println(max + " " + st.get(max));
+            System.out.println("Max word is " + max + "    Max Count " + st.get(max) + "\n");
+            System.out.println("distinct = " + distinct);
+            System.out.println("words    = " + words + "\n");
+            System.out.println("Calculation for Putters is # Words + one for MAX - Words < minlen");
+            System.out.println("Calculation for Getters is # Words + 1 + # Distinct Words + 1");
+            System.out.println("Putters " + putters + " Getters " + getters);
+            System.out.println("Number of Words < minlen  " + wordCnt + "\n");
+            
+            String maxM1 = "";
+            stM1.put(maxM1, 0);
+            for (String word : stM1.keys())
+               if (stM1.get(word) > stM1.get(maxM1))
+                    maxM1 = word;
+            System.out.println("Length of 1 Cutoff Max Word " + maxM1 + " " + stM1.get(maxM1));
+            
+            String maxM8 = "";
+            stM8.put(maxM8, 0);
+            for (String word : stM8.keys())
+                if (stM8.get(word) > stM8.get(maxM8))
+                    maxM8 = word;
+            System.out.println("Length of 8 Cutoff Max Word " + maxM8 + " " + stM8.get(maxM8));
+            
+            String maxM10 = "";
+            stM10.put(maxM10, 0);
+            for (String word : stM10.keys())
+                if (stM10.get(word) > stM10.get(maxM10))
+                    maxM10 = word;
+       System.out.println("Length of 10 Cutoff Max Word " + maxM10 + " " + stM10.get(maxM10) +"\n");
+            
+            priorSTM1 --;
+            priorSTM8 --;
+            priorSTM10 --;
+            System.out.println("Length 1 Prior Word Count " + priorSTM1 + " Last Word " + 	lastSTM1);
+            System.out.println("Length 8 Prior Word Count " + priorSTM8 + " Last Word " + 	lastSTM8);
+            System.out.println("Length 10 Prior Word Count " + priorSTM10 + " Last Word " + 	lastSTM10 + "\n");
+            
+            in.close();
+       	 }
+       		 catch (Exception e)
+      	 {
+      System.err.format("Exception occurred trying to read '%s': " + e.getMessage(), fileName);
+           e.printStackTrace();
+           // return null;
+        } 
+    }
+  }
+
+
+Symbol Table Code
+public class ST<Key extends Comparable<Key>, Value> implements Iterable<Key> {
+
+private TreeMap<Key, Value> st;
+
+public ST() {
+    st = new TreeMap<Key, Value>();
+    }
+
+    public Value get(Key key) {
+        if (key == null) throw new NullPointerException("called get() with null key");
+        return st.get(key);
+    }
+    
+    public void put(Key key, Value val) {
+        if (key == null) throw new NullPointerException("called put() with null key");
+        if (val == null) st.remove(key);
+        else             st.put(key, val);
+    }
+    
+    public void delete(Key key) {
+        if (key == null) throw new NullPointerException("called delete() with null key");
+        st.remove(key);
+    }
+    
+    public boolean contains(Key key) {
+        if (key == null) throw new NullPointerException("called contains() with null key");
+        return st.containsKey(key);
+    }
+
+    public int size() {
+        return st.size();
+    }
+    
+    public boolean isEmpty() {
+        return size() == 0;
+    }
+    
+    public Iterable<Key> keys() {
+        return st.keySet();
+    }
+
+    @Deprecated
+    public Iterator<Key> iterator() {
+    return st.keySet().iterator();
+    }
+    
+    public Key min() {
+        if (isEmpty()) throw new NoSuchElementException("called min() with empty symbol table");
+        return st.firstKey();
+    }
+    
+    public Key max() {
+        if (isEmpty()) throw new NoSuchElementException("called max() with empty symbol table");
+        return st.lastKey();
+    }
+    
+    public Key ceiling(Key key) {
+        if (key == null) throw new NullPointerException("called ceiling() with null key");
+        Key k = st.ceilingKey(key);
+        if (k == null) throw new NoSuchElementException("all keys are less than " + key);
+        return k;
+    }
+    
+    public Key floor(Key key) {
+        if (key == null) throw new NullPointerException("called floor() with null key");
+        Key k = st.floorKey(key);
+        if (k == null) throw new NoSuchElementException("all keys are greater than " + key);
+        return k;
+    }
+    
+      public static void main(String[] args) {
+       	Scanner in = new Scanner(System.in);
+        	ST<String, Integer> st = new ST<String, Integer>();
+       	 String key;
+        	// key = in.nextLine( )).length( ) > 0
+       	 for (int i = 0; (key = in.next( )).length( ) > 0; i++) {
+            // key = StdIn.readString();
+            String[] parts = key.split("\\s+");
+            for (String partKey : parts)
+                 st.put(partKey, i);
+        }
+        
+    }
+
+
+}
